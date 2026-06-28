@@ -1,0 +1,252 @@
+<div class="space-y-8">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-center">
+
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">
+                📅 Consultas
+            </h1>
+
+            <p class="text-gray-500">
+                Gerenciamento das consultas médicas
+            </p>
+        </div>
+
+        <button (click)="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl shadow">
+
+            + Nova Consulta
+
+        </button>
+
+    </div>
+
+    <!-- CARDS -->
+
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+
+        <app-stats-card title="Consultas" [value]="appointments.length" icon="📅" color="bg-blue-600">
+        </app-stats-card>
+
+        <app-stats-card title="Agendadas" [value]="appointments.filter(a=>a.status==='Agendada').length" icon="🟡"
+            color="bg-yellow-500">
+        </app-stats-card>
+
+        <app-stats-card title="Confirmadas" [value]="appointments.filter(a=>a.status==='Confirmada').length" icon="🟢"
+            color="bg-green-600">
+        </app-stats-card>
+
+        <app-stats-card title="Canceladas" [value]="appointments.filter(a=>a.status==='Cancelada').length" icon="🔴"
+            color="bg-red-600">
+        </app-stats-card>
+
+    </div>
+
+    <!-- PESQUISA -->
+
+    <div class="bg-white rounded-2xl shadow p-5">
+
+        <input [(ngModel)]="search" (input)="filterAppointments()" placeholder="🔍 Pesquisar consulta..."
+            class="w-full border rounded-xl p-3">
+
+    </div>
+
+    <!-- TABELA -->
+
+    <div class="bg-white rounded-2xl shadow overflow-hidden">
+
+        <table class="w-full">
+
+            <thead class="bg-gray-100">
+
+                <tr>
+
+                    <th class="p-4 text-left">Paciente</th>
+
+                    <th class="p-4 text-left">Médico</th>
+
+                    <th class="p-4 text-left">Especialidade</th>
+
+                    <th class="p-4 text-left">Data</th>
+
+                    <th class="p-4 text-center">Status</th>
+
+                    <th class="p-4 text-center">Ações</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngFor="let appointment of filteredAppointments" class="border-b hover:bg-gray-50">
+
+                    <td class="p-4">
+
+                        {{ appointment.patient?.name }}
+
+                    </td>
+
+                    <td class="p-4">
+
+                        {{ appointment.doctor?.name }}
+
+                    </td>
+
+                    <td class="p-4">
+
+                        {{ appointment.doctor?.specialty }}
+
+                    </td>
+
+                    <td class="p-4">
+
+                        {{ appointment.date | date:'dd/MM/yyyy HH:mm' }}
+
+                    </td>
+
+                    <td class="p-4 text-center">
+
+                        <span class="px-3 py-1 rounded-full text-white" [ngClass]="{
+
+                'bg-yellow-500': appointment.status==='Agendada',
+
+                'bg-green-600': appointment.status==='Confirmada',
+
+                'bg-red-600': appointment.status==='Cancelada',
+
+                'bg-blue-600': appointment.status==='Concluída'
+
+              }">
+
+                            {{ appointment.status }}
+
+                        </span>
+
+                    </td>
+
+                    <td class="p-4">
+
+                        <div class="flex justify-center gap-3">
+
+                            <button (click)="editAppointment(appointment)" class="text-blue-600 hover:text-blue-800">
+
+                                ✏️
+
+                            </button>
+
+                            <button (click)="deleteAppointment(appointment.id)" class="text-red-600 hover:text-red-800">
+
+                                🗑️
+
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- MODAL -->
+
+<div *ngIf="showModal" class="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
+
+    <div class="bg-white rounded-2xl p-8 w-full max-w-xl">
+
+        <h2 class="text-2xl font-bold mb-6">
+
+            Nova Consulta
+
+        </h2>
+
+        <div class="space-y-4">
+
+            <!-- Paciente -->
+
+            <select [(ngModel)]="form.patientId" class="w-full border rounded-xl p-3">
+
+                <option [ngValue]="0">
+
+                    Selecione um paciente
+
+                </option>
+
+                <option *ngFor="let patient of patients" [ngValue]="patient.id">
+
+                    {{ patient.name }}
+
+                </option>
+
+            </select>
+
+            <!-- Médico -->
+
+            <select [(ngModel)]="form.doctorId" class="w-full border rounded-xl p-3">
+
+                <option [ngValue]="0">
+
+                    Selecione um médico
+
+                </option>
+
+                <option *ngFor="let doctor of doctors" [ngValue]="doctor.id">
+
+                    {{ doctor.name }}
+
+                </option>
+
+            </select>
+
+            <!-- Data -->
+
+            <input type="datetime-local" [(ngModel)]="form.date" class="w-full border rounded-xl p-3">
+
+            <!-- Status -->
+
+            <select [(ngModel)]="form.status" class="w-full border rounded-xl p-3">
+
+                <option>Agendada</option>
+
+                <option>Confirmada</option>
+
+                <option>Concluída</option>
+
+                <option>Cancelada</option>
+
+            </select>
+
+            <!-- Observações -->
+
+            <textarea [(ngModel)]="form.notes" rows="4" placeholder="Observações" class="w-full border rounded-xl p-3">
+
+      </textarea>
+
+        </div>
+
+        <div class="flex justify-end gap-3 mt-8">
+
+            <button (click)="closeModal()" class="bg-gray-300 px-6 py-3 rounded-xl">
+
+                Cancelar
+
+            </button>
+
+            <button (click)="saveAppointment()" class="bg-blue-600 text-white px-6 py-3 rounded-xl">
+
+                Salvar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

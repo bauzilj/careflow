@@ -1,115 +1,291 @@
 <div class="space-y-6">
 
   <!-- HEADER -->
+
   <div>
-    <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>
-    <p class="text-gray-500">Visão geral do sistema CareFlow</p>
+
+    <h1 class="text-3xl font-bold text-gray-800">
+
+      Dashboard
+
+    </h1>
+
+    <p class="text-gray-500">
+
+      Visão geral do sistema CareFlow
+
+    </p>
+
   </div>
 
   <!-- CARDS -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-5">
 
     <!-- Pacientes -->
-    <div class="bg-white p-5 rounded-2xl shadow flex items-center gap-4">
-      <div class="bg-blue-100 p-3 rounded-xl">
+
+    <div class="bg-white rounded-2xl shadow p-5 flex items-center gap-4">
+
+      <div class="bg-blue-100 p-3 rounded-xl text-2xl">
+
         👤
+
       </div>
+
       <div>
-        <p class="text-gray-500 text-sm">Pacientes</p>
-        <h2 class="text-2xl font-bold text-blue-600">128</h2>
+
+        <p class="text-gray-500">
+
+          Pacientes
+
+        </p>
+
+        <h2 class="text-3xl font-bold text-blue-600">
+
+          {{ stats.patients }}
+
+        </h2>
+
       </div>
+
     </div>
 
     <!-- Médicos -->
-    <div class="bg-white p-5 rounded-2xl shadow flex items-center gap-4">
-      <div class="bg-green-100 p-3 rounded-xl">
+
+    <div class="bg-white rounded-2xl shadow p-5 flex items-center gap-4">
+
+      <div class="bg-green-100 p-3 rounded-xl text-2xl">
+
         🩺
+
       </div>
+
       <div>
-        <p class="text-gray-500 text-sm">Médicos</p>
-        <h2 class="text-2xl font-bold text-green-600">
-          {{ doctors.length }} 
+
+        <p class="text-gray-500">
+
+          Médicos
+
+        </p>
+
+        <h2
+          [hidden]="loading"
+          class="text-3xl font-bold text-green-600">
+
+          {{ stats.doctors }}
+
         </h2>
+
+        <div
+          [hidden]="!loading"
+          class="h-8 w-12 bg-gray-200 rounded animate-pulse">
+
+        </div>
+
       </div>
+
     </div>
 
     <!-- Consultas -->
-    <div class="bg-white p-5 rounded-2xl shadow flex items-center gap-4">
-      <div class="bg-purple-100 p-3 rounded-xl">
+
+    <div class="bg-white rounded-2xl shadow p-5 flex items-center gap-4">
+
+      <div class="bg-purple-100 p-3 rounded-xl text-2xl">
+
         📅
+
       </div>
+
       <div>
-        <p class="text-gray-500 text-sm">Consultas Hoje</p>
-        <h2 class="text-2xl font-bold text-purple-600">18</h2>
+
+        <p class="text-gray-500">
+
+          Consultas
+
+        </p>
+
+        <h2 class="text-3xl font-bold text-purple-600">
+
+          {{ stats.appointments }}
+
+        </h2>
+
       </div>
+
+    </div>
+
+    <!-- Hoje -->
+
+    <div class="bg-white rounded-2xl shadow p-5 flex items-center gap-4">
+
+      <div class="bg-yellow-100 p-3 rounded-xl text-2xl">
+
+        ⏰
+
+      </div>
+
+      <div>
+
+        <p class="text-gray-500">
+
+          Hoje
+
+        </p>
+
+        <h2 class="text-3xl font-bold text-yellow-600">
+
+          {{ stats.todayAppointments }}
+
+        </h2>
+
+      </div>
+
     </div>
 
     <!-- Usuários -->
-    <div class="bg-white p-5 rounded-2xl shadow flex items-center gap-4">
-      <div class="bg-red-100 p-3 rounded-xl">
+
+    <div class="bg-white rounded-2xl shadow p-5 flex items-center gap-4">
+
+      <div class="bg-red-100 p-3 rounded-xl text-2xl">
+
         👥
+
       </div>
+
       <div>
-        <p class="text-gray-500 text-sm">Usuários</p>
-        <h2 class="text-2xl font-bold text-red-600">12</h2>
+
+        <p class="text-gray-500">
+
+          Usuários
+
+        </p>
+
+        <h2 class="text-3xl font-bold text-red-600">
+
+          {{ stats.users }}
+
+        </h2>
+
       </div>
+
+    </div>
+
+  </div>
+
+  <!-- GRÁFICO -->
+
+  <div class="bg-white rounded-2xl shadow p-6">
+
+    <h2 class="font-bold text-xl mb-5">
+
+      📊 Médicos por Especialidade
+
+    </h2>
+
+    <div
+      [hidden]="loading"
+      class="h-48 bg-gray-100 animate-pulse rounded-xl">
+
+    </div>
+
+    <div [hidden]="loading">
+
+      <canvas #doctorChart></canvas>
+
     </div>
 
   </div>
 
   <!-- ÁREA INFERIOR -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
-    <!-- CONSULTAS -->
-    <div class="bg-white p-5 rounded-2xl shadow">
-      <h3 class="font-semibold mb-4 text-gray-800 flex items-center gap-2">
-        📋 Consultas Recentes
-      </h3>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
-      <ul class="space-y-3 text-sm text-gray-600">
+    <!-- Consultas -->
 
-        <li class="flex justify-between border-b pb-2">
-          <span>João Silva</span>
-          <span>Dr. Carlos - 09:00</span>
-        </li>
+    <div class="bg-white rounded-2xl shadow p-6">
 
-        <li class="flex justify-between border-b pb-2">
-          <span>Maria Souza</span>
-          <span>Dra. Ana - 10:30</span>
-        </li>
+      <h2 class="font-bold mb-5">
 
-        <li class="flex justify-between">
-          <span>Pedro Lima</span>
-          <span>Dr. Carlos - 11:00</span>
-        </li>
+        📅 Resumo
 
-      </ul>
-    </div>
+      </h2>
 
-    <!-- STATUS -->
-    <div class="bg-white p-5 rounded-2xl shadow">
-      <h3 class="font-semibold mb-4 text-gray-800 flex items-center gap-2">
-        ⚙️ Status do Sistema
-      </h3>
+      <div class="space-y-3">
 
-      <div class="space-y-3 text-sm">
+        <div class="flex justify-between">
 
-        <div class="flex items-center gap-2">
-          <span>🟢</span>
-          <p>API Online</p>
+          <span>Total Consultas</span>
+
+          <strong>{{ stats.appointments }}</strong>
+
         </div>
 
-        <div class="flex items-center gap-2">
-          <span>🟢</span>
-          <p>Banco de Dados Conectado</p>
+        <div class="flex justify-between">
+
+          <span>Consultas Hoje</span>
+
+          <strong>{{ stats.todayAppointments }}</strong>
+
         </div>
 
-        <div class="flex items-center gap-2">
-          <span>🟡</span>
-          <p>Backup Pendente</p>
+        <div class="flex justify-between">
+
+          <span>Total Pacientes</span>
+
+          <strong>{{ stats.patients }}</strong>
+
+        </div>
+
+        <div class="flex justify-between">
+
+          <span>Total Médicos</span>
+
+          <strong>{{ stats.doctors }}</strong>
+
         </div>
 
       </div>
+
+    </div>
+
+    <!-- Sistema -->
+
+    <div class="bg-white rounded-2xl shadow p-6">
+
+      <h2 class="font-bold mb-5">
+
+        ⚙️ Sistema
+
+      </h2>
+
+      <div class="space-y-4">
+
+        <div class="flex items-center gap-2">
+
+          🟢 API Online
+
+        </div>
+
+        <div class="flex items-center gap-2">
+
+          🟢 Banco de Dados
+
+        </div>
+
+        <div class="flex items-center gap-2">
+
+          🟢 Dashboard Atualizado
+
+        </div>
+
+        <div class="flex items-center gap-2">
+
+          🟢 Prisma Conectado
+
+        </div>
+
+      </div>
+
     </div>
 
   </div>

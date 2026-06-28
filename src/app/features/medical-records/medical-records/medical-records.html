@@ -1,0 +1,295 @@
+<div class="space-y-6">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-center">
+
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">
+                📋 Prontuários
+            </h1>
+
+            <p class="text-gray-500">
+                Gerenciamento dos prontuários médicos
+            </p>
+        </div>
+
+        <button (click)="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl shadow">
+
+            + Novo Prontuário
+
+        </button>
+
+    </div>
+
+    <!-- PESQUISA -->
+
+    <div class="bg-white rounded-2xl shadow p-5">
+
+        <input [(ngModel)]="search" (input)="filterRecords()" placeholder="🔍 Pesquisar prontuário..."
+            class="w-full border rounded-xl p-3">
+
+    </div>
+
+    <!-- TABELA -->
+
+    <div class="bg-white rounded-2xl shadow overflow-hidden">
+
+        <table class="w-full">
+
+            <thead class="bg-gray-100">
+
+                <tr>
+
+                    <th class="p-4 text-left">Consulta</th>
+
+                    <th class="p-4 text-left">Queixa Principal</th>
+
+                    <th class="p-4 text-left">Diagnóstico</th>
+
+                    <th class="p-4 text-center">Ações</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngFor="let record of filteredRecords" class="border-b hover:bg-gray-50">
+
+                    <td class="p-4">
+
+                        #{{ record.appointmentId }}
+
+                    </td>
+
+                    <td class="p-4">
+
+                        {{ record.complaint }}
+
+                    </td>
+
+                    <td class="p-4">
+
+                        {{ record.diagnosis }}
+
+                    </td>
+
+                    <td class="p-4">
+
+                        <div class="flex justify-center gap-3">
+
+                            <button (click)="editRecord(record)" class="text-blue-600 hover:text-blue-800">
+
+                                ✏️
+
+                            </button>
+
+                            <button (click)="deleteRecord(record.id)" class="text-red-600 hover:text-red-800">
+
+                                🗑️
+
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- MODAL -->
+
+<div *ngIf="showModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl p-8 max-h-[90vh] overflow-y-auto">
+
+        <h2 class="text-2xl font-bold mb-6">
+
+            {{ selectedRecord ? 'Editar Prontuário' : 'Novo Prontuário' }}
+
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Consulta -->
+            <div class="md:col-span-2">
+
+                <label class="font-semibold text-gray-700">
+                    Consulta
+                </label>
+
+                <select [(ngModel)]="form.appointmentId" (ngModelChange)="onAppointmentChange()"
+                    class="w-full mt-2 border rounded-xl p-3">
+
+                    <option [ngValue]="0">
+                        Selecione uma consulta
+                    </option>
+
+                    <option *ngFor="let appointment of appointments" [ngValue]="appointment.id">
+
+                        {{ appointment.patient?.name }}
+                        —
+                        {{ appointment.doctor?.name }}
+                        —
+                        {{ appointment.date | date:'dd/MM/yyyy HH:mm' }}
+
+                    </option>
+
+                </select>
+
+                <!-- CARD DO PACIENTE -->
+
+                <div *ngIf="selectedPatient"
+                    class="mt-6 bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-2xl p-6 shadow-sm">
+
+                    <h3 class="text-xl font-bold text-blue-700 mb-5 flex items-center gap-2">
+                        👤 Dados do Paciente
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+                        <div>
+                            <p class="text-xs uppercase text-gray-500">Nome</p>
+                            <p class="font-semibold text-gray-800">
+                                {{ selectedPatient.name }}
+                            </p>
+                        </div>
+
+                        <div>
+                            <p class="text-xs uppercase text-gray-500">CPF</p>
+                            <p>{{ selectedPatient.cpf }}</p>
+                        </div>
+
+                        <div>
+                            <p class="text-xs uppercase text-gray-500">Sexo</p>
+                            <p>{{ selectedPatient.gender }}</p>
+                        </div>
+
+                        <div>
+                            <p class="text-xs uppercase text-gray-500">Nascimento</p>
+                            <p>{{ selectedPatient.birthDate | date:'dd/MM/yyyy' }}</p>
+                        </div>
+
+                        <div>
+                            <p class="text-xs uppercase text-gray-500">Telefone</p>
+                            <p>{{ selectedPatient.phone }}</p>
+                        </div>
+
+                        <div>
+                            <p class="text-xs uppercase text-gray-500">Convênio</p>
+                            <p>{{ selectedPatient.insurance || 'Particular' }}</p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- Queixa -->
+
+            <!-- Queixa -->
+
+            <div>
+
+                <label class="font-semibold text-gray-700">
+
+                    Queixa Principal
+
+                </label>
+
+                <input [(ngModel)]="form.complaint" class="w-full mt-2 border rounded-xl p-3">
+
+            </div>
+
+            <!-- Diagnóstico -->
+
+            <div class="md:col-span-2">
+
+                <label class="font-semibold text-gray-700">
+
+                    Diagnóstico
+
+                </label>
+
+                <textarea rows="4" [(ngModel)]="form.diagnosis" class="w-full mt-2 border rounded-xl p-3">
+
+        </textarea>
+
+            </div>
+
+            <!-- Prescrição -->
+
+            <div class="md:col-span-2">
+
+                <label class="font-semibold text-gray-700">
+
+                    Prescrição
+
+                </label>
+
+                <textarea rows="4" [(ngModel)]="form.prescription" class="w-full mt-2 border rounded-xl p-3">
+
+        </textarea>
+
+            </div>
+
+            <!-- Exames -->
+
+            <div class="md:col-span-2">
+
+                <label class="font-semibold text-gray-700">
+
+                    Exames Solicitados
+
+                </label>
+
+                <textarea rows="4" [(ngModel)]="form.exams" class="w-full mt-2 border rounded-xl p-3">
+
+        </textarea>
+
+            </div>
+
+            <!-- Observações -->
+
+            <div class="md:col-span-2">
+
+                <label class="font-semibold text-gray-700">
+
+                    Observações
+
+                </label>
+
+                <textarea rows="4" [(ngModel)]="form.observations" class="w-full mt-2 border rounded-xl p-3">
+
+        </textarea>
+
+            </div>
+
+        </div>
+
+        <div class="flex justify-end gap-3 mt-8">
+
+            <button (click)="closeModal()" class="px-6 py-3 bg-gray-300 rounded-xl">
+
+                Cancelar
+
+            </button>
+
+            <button (click)="saveRecord()" class="px-6 py-3 bg-blue-600 text-white rounded-xl">
+
+                Salvar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

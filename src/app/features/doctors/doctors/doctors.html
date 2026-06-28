@@ -7,7 +7,6 @@
       <h1 class="text-3xl font-bold text-gray-800">
         👨‍⚕️ Médicos
       </h1>
-
       <p class="text-gray-500 mt-1">
         Gerenciamento da equipe médica do CareFlow
       </p>
@@ -15,20 +14,18 @@
 
     <button (click)="openModal()"
       class="bg-blue-600 hover:bg-blue-700 transition text-white px-6 py-3 rounded-xl shadow">
-
       + Novo Médico
-
     </button>
 
   </div>
 
-  <!-- Cards -->
+ 
   <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
 
     <app-stats-card title="Médicos" [value]="doctors.length" icon="👨‍⚕️" color="bg-blue-600">
     </app-stats-card>
 
-    <app-stats-card title="Especialidades" [value]="8" icon="🏥" color="bg-green-600">
+    <app-stats-card title="Especialidades" [value]="totalSpecialties" icon="🏥" color="bg-green-600">
     </app-stats-card>
 
     <app-stats-card title="Consultas Hoje" [value]="18" icon="📅" color="bg-purple-600">
@@ -40,104 +37,60 @@
   </div>
 
   <!-- Pesquisa -->
-
   <div class="bg-white rounded-2xl shadow p-5">
-
     <input [(ngModel)]="search" (input)="filterDoctors()" placeholder="🔍 Pesquisar médico..."
       class="w-full border rounded-xl p-3 focus:ring-2 focus:ring-blue-500">
-
   </div>
 
   <!-- Tabela -->
-
   <div class="bg-white rounded-2xl shadow overflow-hidden">
 
     <table class="w-full">
 
       <thead class="bg-gray-100">
-
         <tr>
-
           <th class="p-4 text-left">Nome</th>
-
           <th class="p-4 text-left">CRM</th>
-
           <th class="p-4 text-left">Especialidade</th>
-
           <th class="p-4 text-left">Telefone</th>
-
           <th class="p-4 text-left">Email</th>
-
           <th class="p-4 text-center">Status</th>
-
           <th class="p-4 text-center">Ações</th>
-
         </tr>
-
       </thead>
 
       <tbody>
 
+      
+        <tr *ngIf="filteredDoctors.length === 0">
+          <td colspan="7" class="p-8 text-center text-gray-400">
+            Nenhum médico encontrado.
+          </td>
+        </tr>
+
         <tr *ngFor="let doctor of filteredDoctors" class="border-b hover:bg-gray-50 transition">
 
-          <td class="p-4 font-semibold">
-
-            {{ doctor.name }}
-
-          </td>
-
-          <td class="p-4">
-
-            {{ doctor.crm }}
-
-          </td>
-
-          <td class="p-4">
-
-            {{ doctor.specialty }}
-
-          </td>
-
-          <td class="p-4">
-
-            {{ doctor.phone }}
-
-          </td>
-
-          <td class="p-4">
-
-            {{ doctor.email }}
-
-          </td>
+          <td class="p-4 font-semibold">{{ doctor.name }}</td>
+          <td class="p-4">{{ doctor.crm }}</td>
+          <td class="p-4">{{ doctor.specialty }}</td>
+          <td class="p-4">{{ doctor.phone }}</td>
+          <td class="p-4">{{ doctor.email }}</td>
 
           <td class="p-4 text-center">
-
             <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
-
               Ativo
-
             </span>
-
           </td>
 
           <td class="p-4">
-
             <div class="flex justify-center gap-3">
-
               <button (click)="editDoctor(doctor)" class="text-blue-600 hover:text-blue-800">
-
                 ✏️
-
               </button>
-
               <button (click)="deleteDoctor(doctor.id)" class="text-red-600 hover:text-red-800">
-
                 🗑️
-
               </button>
-
             </div>
-
           </td>
 
         </tr>
@@ -150,48 +103,53 @@
 
 </div>
 
-<!-- Modal -->
 
-<div *ngIf="showModal" class="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
+<div *ngIf="showModal" (click)="closeModal()"
+  class="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
 
-  <div class="bg-white rounded-2xl w-full max-w-xl p-8 shadow-2xl">
+  
+  <div (click)="$event.stopPropagation()"
+    class="bg-white rounded-2xl w-full max-w-xl p-8 shadow-2xl">
 
     <h2 class="text-2xl font-bold mb-6">
-
       {{ selectedDoctor ? 'Editar Médico' : 'Novo Médico' }}
-
     </h2>
 
     <div class="space-y-4">
-
       <input [(ngModel)]="form.name" placeholder="Nome" class="w-full border rounded-xl p-3">
-
       <input [(ngModel)]="form.crm" placeholder="CRM" class="w-full border rounded-xl p-3">
-
       <input [(ngModel)]="form.specialty" placeholder="Especialidade" class="w-full border rounded-xl p-3">
-
       <input [(ngModel)]="form.email" placeholder="Email" class="w-full border rounded-xl p-3">
-
       <input [(ngModel)]="form.phone" placeholder="Telefone" class="w-full border rounded-xl p-3">
+    </div>
 
+   
+    <div *ngIf="errorMessage"
+      class="mt-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+      ⚠️ {{ errorMessage }}
     </div>
 
     <div class="flex justify-end gap-3 mt-8">
 
-      <button (click)="closeModal()" class="px-5 py-3 rounded-xl bg-gray-200">
-
+      <button (click)="closeModal()"
+        class="px-5 py-3 rounded-xl bg-gray-200 hover:bg-gray-300 transition">
         Cancelar
-
       </button>
 
-      <button (click)="saveDoctor()" class="px-5 py-3 rounded-xl bg-blue-600 text-white">
-
-        Salvar
-
+      
+      <button (click)="saveDoctor()" [disabled]="loading"
+        class="px-5 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
+        {{ loading ? 'Salvando...' : 'Salvar' }}
       </button>
 
     </div>
 
   </div>
 
+</div>
+
+
+<div *ngIf="successMessage"
+  class="fixed bottom-6 right-6 bg-green-600 text-white px-6 py-3 rounded-xl shadow-lg z-50 transition">
+  ✅ {{ successMessage }}
 </div>

@@ -25,6 +25,24 @@ export const routes: Routes = [
             .then(m => m.DoctorsComponent),
       },
       {
+        path: 'patients',
+        loadComponent: () =>
+          import('./features/patients/patients/patients')
+            .then(m => m.PatientsComponent),
+      },
+      {
+        path: 'appointments',
+        loadComponent: () =>
+          import('./features/appointments/appointments/appointments')
+            .then(m => m.AppointmentsComponent),
+      },
+      {
+        path: 'medical-records',
+        loadComponent: () =>
+          import('./features/medical-records/medical-records/medical-records')
+            .then(m => m.MedicalRecordsComponent),
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full',

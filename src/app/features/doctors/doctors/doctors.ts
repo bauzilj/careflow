@@ -14,7 +14,14 @@ import { DoctorsService, Doctor } from '../../../core/services/doctors.service';
 })
 export class DoctorsComponent implements OnInit {
 
+
   constructor(private doctorsService: DoctorsService) { }
+
+
+
+  get totalSpecialties(): number {
+    return new Set(this.doctors.map(d => d.specialty)).size;
+  }
 
   doctors: Doctor[] = [];
   filteredDoctors: Doctor[] = [];
@@ -24,13 +31,7 @@ export class DoctorsComponent implements OnInit {
   showModal = false;
   selectedDoctor: Doctor | null = null;
 
-
-
-
-
   loading = false;
-
-
   successMessage = '';
 
   form = {
@@ -48,13 +49,13 @@ export class DoctorsComponent implements OnInit {
   loadDoctors() {
     this.doctorsService.getDoctors().subscribe({
       next: (data) => {
-
         this.doctors = data;
-
         this.filterDoctors();
-
       },
-      error: (err) => console.error(err)
+
+      error: (err) => {
+        console.error('Erro ao carregar médicos:', err);
+      }
     });
   }
 
@@ -68,12 +69,10 @@ export class DoctorsComponent implements OnInit {
     );
   }
 
-
   openModal() {
     this.selectedDoctor = null;
     this.resetForm();
     this.showModal = true;
-
   }
 
   closeModal() {
@@ -81,9 +80,7 @@ export class DoctorsComponent implements OnInit {
   }
 
   editDoctor(doctor: Doctor) {
-
     this.successMessage = '';
-
     this.selectedDoctor = doctor;
 
     this.form = {
@@ -97,18 +94,20 @@ export class DoctorsComponent implements OnInit {
     this.showModal = true;
   }
 
-
   saveDoctor() {
-
     if (!this.form.name.trim()) {
-      alert('Informe o nome.');
+
+      this.showError('Informe o nome do médico.');
       return;
     }
 
     if (!this.form.crm.trim()) {
-      alert('Informe o CRM.');
+      this.showError('Informe o CRM.');
       return;
     }
+
+
+    const isEditing = !!this.selectedDoctor;
 
     this.loading = true;
 
@@ -117,38 +116,60 @@ export class DoctorsComponent implements OnInit {
       : this.doctorsService.createDoctor(this.form);
 
     request.subscribe({
-      next: () => {
+      next: (result: Doctor) => {
 
-        this.loadDoctors();
+        if (isEditing) {
+          const index = this.doctors.findIndex(d => d.id === result.id);
+          if (index !== -1) {
+            this.doctors[index] = result;
+          }
+        } else {
+          this.doctors.push(result);
+        }
 
+        this.filterDoctors();
         this.resetForm();
-
         this.closeModal();
 
+
         this.showToast(
-          this.selectedDoctor
+          isEditing
             ? 'Médico atualizado com sucesso!'
             : 'Médico cadastrado com sucesso!'
         );
-
       },
-      error: (err) => console.error(err),
-      complete: () => this.loading = false
-    });
 
+      error: (err) => {
+        console.error('Erro ao salvar médico:', err);
+        this.loading = false;
+      },
+      complete: () => {
+        this.loading = false;
+      }
+    });
   }
 
   deleteDoctor(id: number) {
+
     if (!confirm('Deseja excluir este médico?')) return;
 
     this.loading = true;
 
     this.doctorsService.deleteDoctor(id).subscribe({
       next: () => {
-        this.loadDoctors();
+
+        this.doctors = this.doctors.filter(d => d.id !== id);
+        this.filterDoctors();
         this.showToast('Médico removido com sucesso!');
       },
-      complete: () => this.loading = false
+
+      error: (err) => {
+        console.error('Erro ao excluir médico:', err);
+        this.loading = false;
+      },
+      complete: () => {
+        this.loading = false;
+      }
     });
   }
 
@@ -162,12 +183,22 @@ export class DoctorsComponent implements OnInit {
     };
   }
 
-
   showToast(message: string) {
     this.successMessage = message;
 
     setTimeout(() => {
       this.successMessage = '';
     }, 3000);
+  }
+
+
+  errorMessage = '';
+
+  showError(message: string) {
+    this.errorMessage = message;
+
+    setTimeout(() => {
+      this.errorMessage = '';
+    }, 4000);
   }
 }

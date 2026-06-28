@@ -1,0 +1,321 @@
+<div class="space-y-8">
+
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+
+    <div>
+
+      <h1 class="text-3xl font-bold text-gray-800">
+
+        👤 Pacientes
+
+      </h1>
+
+      <p class="text-gray-500">
+
+        Gerenciamento de pacientes do CareFlow
+
+      </p>
+
+    </div>
+
+    <button (click)="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl shadow">
+
+      + Novo Paciente
+
+    </button>
+
+  </div>
+
+  <!-- Cards -->
+
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+
+    <app-stats-card title="Pacientes" [value]="patients.length" icon="👤" color="bg-blue-600">
+    </app-stats-card>
+
+    <app-stats-card title="Convênios" [value]="10" icon="🏥" color="bg-green-600">
+    </app-stats-card>
+
+    <app-stats-card title="Masculino" [value]="patients.filter(p=>p.gender==='Masculino').length" icon="👨"
+      color="bg-cyan-600">
+    </app-stats-card>
+
+    <app-stats-card title="Feminino" [value]="patients.filter(p=>p.gender==='Feminino').length" icon="👩"
+      color="bg-pink-600">
+    </app-stats-card>
+
+  </div>
+
+  <!-- Pesquisa -->
+
+  <div class="bg-white rounded-2xl shadow p-5">
+
+    <input [(ngModel)]="search" (input)="filterPatients()" placeholder="🔍 Pesquisar paciente..."
+      class="w-full border rounded-xl p-3">
+
+  </div>
+
+  <div class="bg-white rounded-2xl shadow overflow-hidden">
+
+    <table class="w-full">
+
+      <thead class="bg-gray-100">
+
+        <tr>
+
+          <th class="p-4 text-left">Nome</th>
+
+          <th class="p-4 text-left">CPF</th>
+
+          <th class="p-4 text-left">Telefone</th>
+
+          <th class="p-4 text-left">Convênio</th>
+
+          <th class="p-4 text-center">Sexo</th>
+
+          <th class="p-4 text-center">Ações</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let patient of filteredPatients" class="border-b hover:bg-gray-50">
+
+          <td class="p-4 font-semibold">
+
+            {{ patient.name }}
+
+          </td>
+
+          <td class="p-4">
+
+            {{ patient.cpf }}
+
+          </td>
+
+          <td class="p-4">
+
+            {{ patient.phone }}
+
+          </td>
+
+          <td class="p-4">
+
+            {{ patient.insurance }}
+
+          </td>
+
+          <td class="p-4 text-center">
+
+            <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700">
+
+              {{ patient.gender }}
+
+            </span>
+
+          </td>
+
+          <td class="p-4">
+
+            <div class="flex justify-center gap-4">
+
+              <button (click)="editPatient(patient)" class="text-blue-600">
+
+                ✏️
+
+              </button>
+
+              <button (click)="deletePatient(patient.id)" class="text-red-600">
+
+                🗑️
+
+              </button>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <div *ngIf="showModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+
+    <div class="bg-white rounded-2xl p-8 w-full max-w-3xl">
+
+      <h2 class="text-2xl font-bold mb-6">
+
+        {{ selectedPatient ? 'Editar Paciente' : 'Novo Paciente' }}
+
+      </h2>
+
+      <div class="grid grid-cols-2 gap-4">
+
+        <input [(ngModel)]="form.name" placeholder="Nome" class="border rounded-xl p-3">
+
+        <input [(ngModel)]="form.cpf" placeholder="CPF" class="border rounded-xl p-3">
+
+        <input type="date" [(ngModel)]="form.birthDate" class="border rounded-xl p-3">
+
+        <select [(ngModel)]="form.gender" class="border rounded-xl p-3">
+
+          <option value="">Sexo</option>
+          <option>Masculino</option>
+          <option>Feminino</option>
+
+        </select>
+
+        <input [(ngModel)]="form.phone" placeholder="Telefone" class="border rounded-xl p-3">
+
+        <input [(ngModel)]="form.email" placeholder="Email" class="border rounded-xl p-3">
+
+        <input [(ngModel)]="form.insurance" placeholder="Convênio" class="border rounded-xl p-3">
+
+        <input [(ngModel)]="form.bloodType" placeholder="Tipo Sanguíneo" class="border rounded-xl p-3">
+
+        <textarea [(ngModel)]="form.allergies" placeholder="Alergias" class="border rounded-xl p-3 col-span-2">
+
+</textarea>
+
+        <textarea [(ngModel)]="form.observations" placeholder="Observações" class="border rounded-xl p-3 col-span-2">
+
+</textarea>
+
+      </div>
+
+      <div class="flex justify-end gap-4 mt-8">
+
+        <button (click)="closeModal()" class="bg-gray-300 px-6 py-3 rounded-xl">
+
+          Cancelar
+
+        </button>
+
+        <button (click)="savePatient()" class="bg-blue-600 text-white px-6 py-3 rounded-xl">
+
+          Salvar
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div *ngIf="selectedPatient" class="bg-blue-50 border border-blue-200 rounded-xl p-5">
+
+    <h3 class="font-bold text-lg mb-4">
+
+      👤 Dados do Paciente
+
+    </h3>
+
+    <div class="grid grid-cols-2 gap-4">
+
+      <div>
+
+        <p class="text-gray-500 text-sm">
+
+          Nome
+
+        </p>
+
+        <p class="font-semibold">
+
+          {{ selectedPatient.name }}
+
+        </p>
+
+      </div>
+
+      <div>
+
+        <p class="text-gray-500 text-sm">
+
+          CPF
+
+        </p>
+
+        <p class="font-semibold">
+
+          {{ selectedPatient.cpf }}
+
+        </p>
+
+      </div>
+
+      <div>
+
+        <p class="text-gray-500 text-sm">
+
+          Nascimento
+
+        </p>
+
+        <p>
+
+          {{ selectedPatient.birthDate | date:'dd/MM/yyyy' }}
+
+        </p>
+
+      </div>
+
+      <div>
+
+        <p class="text-gray-500 text-sm">
+
+          Telefone
+
+        </p>
+
+        <p>
+
+          {{ selectedPatient.phone }}
+
+        </p>
+
+      </div>
+
+      <div>
+
+        <p class="text-gray-500 text-sm">
+
+          Convênio
+
+        </p>
+
+        <p>
+
+          {{ selectedPatient.insurance || 'Particular' }}
+
+        </p>
+
+      </div>
+
+      <div>
+
+        <p class="text-gray-500 text-sm">
+
+          Sexo
+
+        </p>
+
+        <p>
+
+          {{ selectedPatient.gender }}
+
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
