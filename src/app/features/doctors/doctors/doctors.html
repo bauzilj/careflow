@@ -1,149 +1,197 @@
-<div class="min-h-screen bg-gray-50 p-6">
+<div class="space-y-8">
 
-    <!-- 🔔 TOAST -->
-    <div *ngIf="successMessage" class="fixed top-5 right-5 bg-green-600 text-white px-5 py-3 rounded-xl shadow-lg z-50">
-        {{ successMessage }}
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+
+    <div>
+      <h1 class="text-3xl font-bold text-gray-800">
+        👨‍⚕️ Médicos
+      </h1>
+
+      <p class="text-gray-500 mt-1">
+        Gerenciamento da equipe médica do CareFlow
+      </p>
     </div>
 
-    <!-- HEADER -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+    <button (click)="openModal()"
+      class="bg-blue-600 hover:bg-blue-700 transition text-white px-6 py-3 rounded-xl shadow">
 
-        <div>
-            <h1 class="text-3xl font-bold text-gray-800">Médicos</h1>
-            <p class="text-gray-500">Gerenciamento de profissionais da saúde</p>
-        </div>
+      + Novo Médico
 
-        <button (click)="openModal()"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl shadow-md transition">
-            + Novo Médico
-        </button>
+    </button>
 
-    </div>
+  </div>
 
-    <!-- STATS -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+  <!-- Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
 
-        <div class="bg-white p-5 rounded-2xl shadow">
-            <p class="text-gray-500">Total de Médicos</p>
-            <h2 class="text-2xl font-bold text-blue-600">{{ doctors.length }}</h2>
-        </div>
+    <app-stats-card title="Médicos" [value]="doctors.length" icon="👨‍⚕️" color="bg-blue-600">
+    </app-stats-card>
 
-        <div class="bg-white p-5 rounded-2xl shadow">
-            <p class="text-gray-500">Especialidades</p>
-            <h2 class="text-2xl font-bold text-green-600">
-                {{ filteredDoctors.map(d => d.specialty).filter((v, i, a) => a.indexOf(v) === i).length }}
-            </h2>
-        </div>
+    <app-stats-card title="Especialidades" [value]="8" icon="🏥" color="bg-green-600">
+    </app-stats-card>
 
-        <div class="bg-white p-5 rounded-2xl shadow">
-            <p class="text-gray-500">Resultados filtrados</p>
-            <h2 class="text-2xl font-bold text-purple-600">{{ filteredDoctors.length }}</h2>
-        </div>
+    <app-stats-card title="Consultas Hoje" [value]="18" icon="📅" color="bg-purple-600">
+    </app-stats-card>
 
-    </div>
+    <app-stats-card title="Ativos" [value]="doctors.length" icon="🟢" color="bg-emerald-600">
+    </app-stats-card>
 
-    <!-- SEARCH -->
-    <div class="mb-6">
-        <input type="text" [(ngModel)]="search" (input)="filterDoctors()"
-            placeholder="Buscar por nome, CRM ou especialidade..."
-            class="w-full p-3 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    </div>
+  </div>
 
-    <!-- TABLE -->
-    <div class="bg-white rounded-2xl shadow overflow-x-auto">
+  <!-- Pesquisa -->
 
-        <table class="w-full text-left">
+  <div class="bg-white rounded-2xl shadow p-5">
 
-            <thead class="bg-gray-100 text-gray-600 text-sm">
-                <tr>
-                    <th class="p-4">Nome</th>
-                    <th class="p-4">Email</th>
-                    <th class="p-4">CRM</th>
-                    <th class="p-4">Especialidade</th>
-                    <th class="p-4">Telefone</th>
-                    <th class="p-4 text-right">Ações</th>
-                </tr>
-            </thead>
+    <input [(ngModel)]="search" (input)="filterDoctors()" placeholder="🔍 Pesquisar médico..."
+      class="w-full border rounded-xl p-3 focus:ring-2 focus:ring-blue-500">
 
-            <tbody>
-                <tr *ngFor="let doctor of filteredDoctors" class="border-t hover:bg-gray-50 transition">
+  </div>
 
-                    <td class="p-4 font-medium text-gray-800">{{ doctor.name }}</td>
-                    <td class="p-4 text-gray-600">{{ doctor.email }}</td>
-                    <td class="p-4 text-gray-600">{{ doctor.crm }}</td>
+  <!-- Tabela -->
 
-                    <td class="p-4">
-                        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
-                            {{ doctor.specialty }}
-                        </span>
-                    </td>
+  <div class="bg-white rounded-2xl shadow overflow-hidden">
 
-                    <td class="p-4 text-gray-600">{{ doctor.phone }}</td>
+    <table class="w-full">
 
-                    <td class="p-4 text-right">
+      <thead class="bg-gray-100">
 
-                        <button (click)="openModal(doctor)"
-                            class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-sm mr-2">
-                            Editar
-                        </button>
+        <tr>
 
-                        <button (click)="deleteDoctor(doctor.id)"
-                            class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm">
-                            Excluir
-                        </button>
+          <th class="p-4 text-left">Nome</th>
 
-                    </td>
+          <th class="p-4 text-left">CRM</th>
 
-                </tr>
-            </tbody>
+          <th class="p-4 text-left">Especialidade</th>
 
-        </table>
+          <th class="p-4 text-left">Telefone</th>
 
-    </div>
+          <th class="p-4 text-left">Email</th>
 
-    <!-- MODAL -->
-    <div *ngIf="showModal" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
+          <th class="p-4 text-center">Status</th>
 
-        <div class="bg-white w-full max-w-lg rounded-2xl shadow-lg p-6">
+          <th class="p-4 text-center">Ações</th>
 
-            <h2 class="text-xl font-bold mb-4">
-                {{ editingId ? 'Editar Médico' : 'Cadastrar Médico' }}
-            </h2>
+        </tr>
 
-            <div class="grid grid-cols-1 gap-3">
+      </thead>
 
-                <input [(ngModel)]="form.name" placeholder="Nome"
-                    class="p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <tbody>
 
-                <input [(ngModel)]="form.email" placeholder="Email"
-                    class="p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <tr *ngFor="let doctor of filteredDoctors" class="border-b hover:bg-gray-50 transition">
 
-                <input [(ngModel)]="form.crm" placeholder="CRM"
-                    class="p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <td class="p-4 font-semibold">
 
-                <input [(ngModel)]="form.specialty" placeholder="Especialidade"
-                    class="p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            {{ doctor.name }}
 
-                <input [(ngModel)]="form.phone" placeholder="Telefone"
-                    class="p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </td>
+
+          <td class="p-4">
+
+            {{ doctor.crm }}
+
+          </td>
+
+          <td class="p-4">
+
+            {{ doctor.specialty }}
+
+          </td>
+
+          <td class="p-4">
+
+            {{ doctor.phone }}
+
+          </td>
+
+          <td class="p-4">
+
+            {{ doctor.email }}
+
+          </td>
+
+          <td class="p-4 text-center">
+
+            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
+
+              Ativo
+
+            </span>
+
+          </td>
+
+          <td class="p-4">
+
+            <div class="flex justify-center gap-3">
+
+              <button (click)="editDoctor(doctor)" class="text-blue-600 hover:text-blue-800">
+
+                ✏️
+
+              </button>
+
+              <button (click)="deleteDoctor(doctor.id)" class="text-red-600 hover:text-red-800">
+
+                🗑️
+
+              </button>
 
             </div>
 
-            <div class="flex justify-end gap-3 mt-5">
+          </td>
 
-                <button (click)="closeModal()" class="px-4 py-2 rounded-xl bg-gray-200 hover:bg-gray-300">
-                    Cancelar
-                </button>
+        </tr>
 
-                <button (click)="saveDoctor()" [disabled]="loading"
-                    class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 disabled:cursor-not-allowed">
-                    {{ loading ? 'Salvando...' : 'Salvar' }}
-                </button>
+      </tbody>
 
-            </div>
+    </table>
 
-        </div>
+  </div>
+
+</div>
+
+<!-- Modal -->
+
+<div *ngIf="showModal" class="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
+
+  <div class="bg-white rounded-2xl w-full max-w-xl p-8 shadow-2xl">
+
+    <h2 class="text-2xl font-bold mb-6">
+
+      {{ selectedDoctor ? 'Editar Médico' : 'Novo Médico' }}
+
+    </h2>
+
+    <div class="space-y-4">
+
+      <input [(ngModel)]="form.name" placeholder="Nome" class="w-full border rounded-xl p-3">
+
+      <input [(ngModel)]="form.crm" placeholder="CRM" class="w-full border rounded-xl p-3">
+
+      <input [(ngModel)]="form.specialty" placeholder="Especialidade" class="w-full border rounded-xl p-3">
+
+      <input [(ngModel)]="form.email" placeholder="Email" class="w-full border rounded-xl p-3">
+
+      <input [(ngModel)]="form.phone" placeholder="Telefone" class="w-full border rounded-xl p-3">
 
     </div>
+
+    <div class="flex justify-end gap-3 mt-8">
+
+      <button (click)="closeModal()" class="px-5 py-3 rounded-xl bg-gray-200">
+
+        Cancelar
+
+      </button>
+
+      <button (click)="saveDoctor()" class="px-5 py-3 rounded-xl bg-blue-600 text-white">
+
+        Salvar
+
+      </button>
+
+    </div>
+
+  </div>
 
 </div>

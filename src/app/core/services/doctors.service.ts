@@ -20,22 +20,24 @@ export class DoctorsService {
 
   constructor(private http: HttpClient) {}
 
- 
   getDoctors(): Observable<Doctor[]> {
     return this.http.get<Doctor[]>(this.api);
   }
 
-  
+  getDoctor(id: number): Observable<Doctor> {
+    return this.http.get<Doctor>(`${this.api}/${id}`);
+  }
+
   createDoctor(doctor: Omit<Doctor, 'id'>): Observable<Doctor> {
     return this.http.post<Doctor>(this.api, doctor);
   }
 
- 
   updateDoctor(id: number, doctor: Omit<Doctor, 'id'>): Observable<Doctor> {
     return this.http.put<Doctor>(`${this.api}/${id}`, doctor);
   }
 
- 
+  
+
   deleteDoctor(id: number): Observable<void> {
     return this.http.delete<void>(`${this.api}/${id}`);
   }
