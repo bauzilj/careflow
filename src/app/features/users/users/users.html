@@ -1,114 +1,301 @@
 <div class="space-y-6">
 
   <!-- HEADER -->
-  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+  <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
 
+    <!-- Título -->
     <div>
-      <h1 class="text-3xl font-bold text-gray-900">Usuários</h1>
-      <p class="text-gray-500 mt-1">
-        Gerencie os usuários do sistema CareFlow
+
+      <h1 class="text-4xl font-bold text-slate-800 dark:text-white">
+        👥 Usuários
+      </h1>
+
+      <p class="mt-2 text-slate-500 dark:text-slate-400">
+        Gerencie todos os usuários cadastrados no sistema CareFlow.
       </p>
+
     </div>
 
-    <button
-      (click)="openModal()"
-      class="bg-blue-600 text-white px-5 py-2.5 rounded-lg shadow hover:bg-blue-700 transition">
-      + Adicionar Usuário
-    </button>
+    <!-- Botões -->
+    <div class="flex items-center gap-3">
+
+      <button
+        class="px-5 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow hover:shadow-lg transition">
+
+        📄 Exportar
+
+      </button>
+
+      <button (click)="openModal()"
+        class="px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-lg transition">
+
+        ➕ Novo Usuário
+
+      </button>
+
+    </div>
 
   </div>
 
-  <!-- FILTERS -->
-  <div class="flex flex-col md:flex-row gap-3">
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-8">
 
-    <!-- SEARCH -->
-    <input
-      [ngModel]="search"
-      (ngModelChange)="searchChanged.next($event)"
-      placeholder="Buscar por nome ou email..."
-      class="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-    />
+    <!-- Total -->
+    <div
+      class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm hover:shadow-xl transition">
 
-    <!-- ROLE FILTER -->
-    <select
-      [(ngModel)]="roleFilter"
-      class="w-full md:w-60 border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+      <div class="flex justify-between">
 
-      <option value="">Todos os perfis</option>
-      <option value="Admin">Admin</option>
-      <option value="Médico">Médico</option>
-      <option value="Recepção">Recepção</option>
+        <div>
 
-    </select>
+          <p class="text-slate-500">Total de Usuários</p>
+
+          <h2 class="text-5xl font-bold text-indigo-600 mt-2">
+            {{ users.length }}
+          </h2>
+
+        </div>
+
+        <div class="w-16 h-16 rounded-2xl bg-indigo-100 flex items-center justify-center text-3xl">
+
+          👥
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Administradores -->
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+
+      <div class="flex justify-between">
+
+        <div>
+
+          <p class="text-slate-500">Administradores</p>
+
+          <h2 class="text-5xl font-bold text-purple-600 mt-2">
+            {{ adminCount }}
+          </h2>
+
+        </div>
+
+        <div class="w-16 h-16 rounded-2xl bg-purple-100 flex items-center justify-center text-3xl">
+
+          🛡️
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Médicos -->
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+
+      <div class="flex justify-between">
+
+        <div>
+
+          <p class="text-slate-500">Médicos</p>
+
+          <h2 class="text-5xl font-bold text-green-600 mt-2">
+            {{ doctorCount }}
+          </h2>
+
+        </div>
+
+        <div class="w-16 h-16 rounded-2xl bg-green-100 flex items-center justify-center text-3xl">
+
+          🩺
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Ativos -->
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+
+      <div class="flex justify-between">
+
+        <div>
+
+          <p class="text-slate-500">Usuários Ativos</p>
+
+          <h2 class="text-5xl font-bold text-blue-600 mt-2">
+            {{ activeCount }}
+          </h2>
+
+        </div>
+
+        <div class="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center text-3xl">
+
+          ✅
+
+        </div>
+
+      </div>
+
+    </div>
 
   </div>
 
-  <!-- LOADING -->
-  <div *ngIf="isLoading" class="space-y-3">
-    <div class="h-10 bg-gray-200 animate-pulse rounded"></div>
-    <div class="h-10 bg-gray-200 animate-pulse rounded"></div>
-    <div class="h-10 bg-gray-200 animate-pulse rounded"></div>
+  <div class="mt-8 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
+
+    <div class="flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
+
+      <div class="relative flex-1">
+
+        <span class="absolute left-4 top-3 text-gray-400">
+          🔍
+        </span>
+
+        <input type="text" [(ngModel)]="search" placeholder="Pesquisar usuário..."
+          class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none">
+
+      </div>
+
+      <select [(ngModel)]="roleFilter" class="px-4 py-3 rounded-xl border border-slate-300">
+
+        <option value="">Todos os Perfis</option>
+        <option value="Admin">Administrador</option>
+        <option value="Médico">Médico</option>
+
+      </select>
+
+
+
+    </div>
+
   </div>
 
-  <!-- TABLE -->
-  <div *ngIf="!isLoading" class="bg-white border rounded-2xl shadow-sm overflow-hidden">
+  <!-- TABELA -->
+  <div
+    class="mt-8 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
 
-    <table class="w-full text-sm">
+    <table class="w-full">
 
-      <thead class="bg-gray-50 text-gray-600 text-xs uppercase">
-        <tr>
-          <th class="px-6 py-4 text-left">Usuário</th>
-          <th class="px-6 py-4 text-left">Email</th>
-          <th class="px-6 py-4 text-left">Perfil</th>
-          <th class="px-6 py-4 text-right">Ações</th>
+      <!-- Cabeçalho -->
+      <thead class="bg-slate-50 dark:bg-slate-800">
+
+        <tr class="text-left text-slate-600 dark:text-slate-300">
+
+          <th class="px-6 py-4">Usuário</th>
+
+          <th class="px-6 py-4">Email</th>
+
+          <th class="px-6 py-4">Perfil</th>
+
+          <th class="px-6 py-4">Status</th>
+
+          <th class="px-6 py-4 text-center">Ações</th>
+
         </tr>
+
       </thead>
 
-      <tbody class="divide-y">
+      <!-- Corpo -->
+      <tbody>
 
-        <tr
-          *ngFor="let user of paginatedUsers"
-          class="hover:bg-gray-50 transition">
+        <tr *ngFor="let user of paginatedUsers"
+          class="border-t border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
 
-          <!-- USER -->
-          <td class="px-6 py-4 flex items-center gap-3">
+          <!-- Usuário -->
+          <td class="px-6 py-5">
 
-            <div class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
-              {{ user.name.charAt(0).toUpperCase() }}
+            <div class="flex items-center gap-4">
+
+              <div
+                class="w-12 h-12 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold flex items-center justify-center">
+
+                {{ getInitials(user.name) }}
+
+              </div>
+
+              <div>
+
+                <p class="font-semibold text-slate-800 dark:text-white">
+
+                  {{ user.name }}
+
+                </p>
+
+                <p class="text-xs text-slate-500">
+
+                  ID #{{ user.id }}
+
+                </p>
+
+              </div>
+
             </div>
 
-            <span class="font-medium text-gray-900">
-              {{ user.name }}
-            </span>
-
           </td>
 
-          <!-- EMAIL -->
-          <td class="px-6 py-4 text-gray-600">
+          <!-- Email -->
+          <td class="px-6 py-5 text-slate-600 dark:text-slate-300">
+
             {{ user.email }}
+
           </td>
 
-          <!-- ROLE -->
-          <td class="px-6 py-4">
-            <span class="px-3 py-1 text-xs rounded-full font-semibold bg-blue-50 text-blue-700">
+          <!-- Perfil -->
+          <td class="px-6 py-5">
+
+            <span class="px-3 py-1 rounded-full text-sm font-medium" [ngClass]="{
+              'bg-purple-100 text-purple-700': user.role === 'Admin',
+              'bg-green-100 text-green-700': user.role === 'Médico',
+              'bg-blue-100 text-blue-700': user.role !== 'Admin' && user.role !== 'Médico'
+            }">
+
               {{ user.role }}
+
             </span>
+
           </td>
 
-          <!-- ACTIONS -->
-          <td class="px-6 py-4 text-right space-x-2">
+          <!-- Status -->
+          <td class="px-6 py-5">
 
-            <button
-              (click)="editUser(user)"
-              class="px-3 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 transition">
-              Editar
-            </button>
+            <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-medium">
 
-            <button
-              (click)="deleteUser(user.id)"
-              class="px-3 py-1 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition">
-              Excluir
-            </button>
+              ● Ativo
+
+            </span>
+
+          </td>
+
+          <!-- Ações -->
+          <td class="px-6 py-5">
+
+            <div class="flex justify-center gap-2">
+
+              <button (click)="editUser(user)" class="w-10 h-10 rounded-xl bg-blue-100 hover:bg-blue-200 transition">
+
+                ✏️
+
+              </button>
+
+              <button (click)="deleteUser(user.id)" class="w-10 h-10 rounded-xl bg-red-100 hover:bg-red-200 transition">
+
+                🗑️
+
+              </button>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+        <!-- Sem usuários -->
+        <tr *ngIf="paginatedUsers.length === 0">
+
+          <td colspan="5" class="py-12 text-center text-slate-400">
+
+            Nenhum usuário encontrado.
 
           </td>
 
@@ -118,92 +305,130 @@
 
     </table>
 
-    <!-- EMPTY STATE -->
-    <div *ngIf="filteredUsers.length === 0" class="p-10 text-center text-gray-500">
-      Nenhum usuário encontrado 😕
+  </div>
+
+
+  <!-- MODAL -->
+
+  <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-xl p-8 animate-fade">
+
+      <!-- Header -->
+
+      <div class="flex items-center justify-between mb-8">
+
+        <div>
+
+          <h2 class="text-2xl font-bold text-slate-800 dark:text-white">
+
+            {{ selectedUser ? 'Editar Usuário' : 'Novo Usuário' }}
+
+          </h2>
+
+          <p class="text-slate-500">
+
+            Preencha as informações abaixo.
+
+          </p>
+
+        </div>
+
+        <button (click)="closeModal()" class="text-3xl text-slate-400 hover:text-red-500">
+
+          ×
+
+        </button>
+
+      </div>
+
+      <!-- Nome -->
+
+      <div class="mb-5">
+
+        <label class="block mb-2 font-medium">
+
+          Nome
+
+        </label>
+
+        <input [(ngModel)]="form.name"
+          class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
+
+      </div>
+
+      <!-- Email -->
+
+      <div class="mb-5">
+
+        <label class="block mb-2 font-medium">
+
+          Email
+
+        </label>
+
+        <input [(ngModel)]="form.email" type="email"
+          class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
+
+      </div>
+
+      <!-- Senha -->
+
+      <div class="mb-5">
+
+        <label class="block mb-2 font-medium">
+
+          Senha
+
+        </label>
+
+        <input [(ngModel)]="form.password" type="password" placeholder="********"
+          class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
+
+      </div>
+
+      <!-- Perfil -->
+
+      <div class="mb-8">
+
+        <label class="block mb-2 font-medium">
+
+          Perfil
+
+        </label>
+
+        <select [(ngModel)]="form.role" class="w-full rounded-xl border border-slate-300 px-4 py-3">
+
+          <option *ngFor="let role of roles" [value]="role">
+            {{ role }}
+          </option>
+
+        </select>
+
+      </div>
+
+      <!-- Botões -->
+
+      <div class="flex justify-end gap-3">
+
+        <button (click)="closeModal()" class="px-6 py-3 rounded-xl border">
+
+          Cancelar
+
+        </button>
+
+        <button (click)="saveUser()" class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white">
+
+          {{ selectedUser ? 'Salvar Alterações' : 'Cadastrar' }}
+
+        </button>
+
+      </div>
+
     </div>
 
   </div>
 
-  <!-- PAGINATION -->
-  <div class="flex justify-between items-center">
 
-    <button
-      (click)="page = page - 1"
-      [disabled]="page === 1"
-      class="px-4 py-2 bg-gray-200 rounded-lg disabled:opacity-50">
-      Anterior
-    </button>
-
-    <span class="text-sm text-gray-600">
-      Página {{ page }}
-    </span>
-
-    <button
-      (click)="page = page + 1"
-      [disabled]="page * pageSize >= filteredUsers.length"
-      class="px-4 py-2 bg-gray-200 rounded-lg disabled:opacity-50">
-      Próxima
-    </button>
-
-  </div>
-
-</div>
-
-<!-- MODAL -->
-<div
-  *ngIf="showModal"
-  class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-
-  <div class="bg-white w-full max-w-md rounded-2xl shadow-xl p-6 space-y-4">
-
-    <h2 class="text-xl font-bold text-gray-900">
-      {{ selectedUser ? 'Editar Usuário' : 'Novo Usuário' }}
-    </h2>
-
-    <input
-      [(ngModel)]="form.name"
-      placeholder="Nome"
-      class="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
-
-    <input
-      [(ngModel)]="form.email"
-      placeholder="Email"
-      class="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
-
-    <input
-      [(ngModel)]="form.password"
-      type="password"
-      placeholder="Senha"
-      class="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
-
-    <select
-      [(ngModel)]="form.role"
-      class="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-
-      <option value="Admin">Admin</option>
-      <option value="Médico">Médico</option>
-      <option value="Recepção">Recepção</option>
-
-    </select>
-
-    <!-- ACTIONS -->
-    <div class="flex justify-end gap-3">
-
-      <button
-        (click)="closeModal()"
-        class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
-        Cancelar
-      </button>
-
-      <button
-        (click)="saveUser()"
-        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-        Salvar
-      </button>
-
-    </div>
-
-  </div>
 
 </div>

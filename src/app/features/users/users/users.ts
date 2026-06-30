@@ -10,6 +10,7 @@ interface User {
   name: string;
   email: string;
   role: string;
+  active?: boolean;
 }
 
 @Component({
@@ -47,10 +48,16 @@ export class UsersComponent implements OnInit, OnDestroy {
     role: 'Admin'
   };
 
+  roles = [
+    'Admin',
+    'Médico',
+    'Recepção'
+  ];
+
   showModal = false;
   selectedUser: User | null = null;
 
-  constructor(private usersService: UsersService) {}
+  constructor(private usersService: UsersService) { }
 
   ngOnInit(): void {
     this.loadUsers();
@@ -62,6 +69,21 @@ export class UsersComponent implements OnInit, OnDestroy {
         this.page = 1;
       });
   }
+
+
+  get adminCount(): number {
+    return this.users.filter(user => user.role === 'Admin').length;
+  }
+
+  get doctorCount(): number {
+    return this.users.filter(user => user.role === 'Médico').length;
+  }
+
+
+  get activeCount(): number {
+    return this.users.length;
+  }
+
 
   // 📦 FILTER
   get filteredUsers(): User[] {
@@ -215,5 +237,16 @@ export class UsersComponent implements OnInit, OnDestroy {
   // 🧹 CLEANUP
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  getInitials(name: string): string {
+
+    return name
+      .split(' ')
+      .map(part => part.charAt(0))
+      .slice(0, 2)
+      .join('')
+      .toUpperCase();
+
   }
 }

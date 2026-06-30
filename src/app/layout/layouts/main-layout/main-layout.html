@@ -1,144 +1,124 @@
-<div class="flex h-screen bg-gradient-to-br from-slate-50 to-gray-100 font-['Inter',system-ui,sans-serif]">
+<div class="flex h-screen bg-slate-100 overflow-hidden">
 
-  <!-- SIDEBAR com fundo escuro elegante -->
-  <aside
-    class="w-72 bg-gradient-to-br from-slate-800 via-slate-900 to-gray-900 text-white flex flex-col shadow-2xl shadow-slate-900/30 flex-shrink-0 relative overflow-hidden">
+  <!-- SIDEBAR -->
+  <aside [class.w-72]="!sidebarCollapsed" [class.w-24]="sidebarCollapsed" class="bg-slate-900
+       dark:bg-black
+       text-white
+       flex
+       flex-col
+       shadow-2xl
+       transition-all
+       duration-300">
 
-    <!-- Efeito de fundo com gradiente sutil -->
-    <div class="absolute inset-0 opacity-40 pointer-events-none"
-      style="background-image: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%), radial-gradient(circle at 100% 100%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);">
-    </div>
-
-    <!-- Linha decorativa superior -->
-    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
-
-    <!-- LOGO -->
-    <div
-      class="relative z-10 p-6 text-xl font-bold border-b border-white/10 flex items-center gap-3 bg-white/5 backdrop-blur-sm">
+    <!-- Logo -->
+    <div class="h-20 border-b border-slate-800 flex items-center transition-all duration-300"
+      [class.justify-center]="sidebarCollapsed" [class.px-6]="!sidebarCollapsed">
 
       <div
-        class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30 flex-shrink-0 text-xl">
+        class="w-12 h-12 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center text-2xl font-bold">
+
         🏥
+
       </div>
 
-      <span
-        class="bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent font-extrabold tracking-tight">
-        CareFlow
-      </span>
+      <div *ngIf="!sidebarCollapsed" class="ml-4">
 
-      <span
-        class="ml-auto text-[10px] font-medium uppercase tracking-wider bg-white/10 px-2 py-0.5 rounded-full text-indigo-200 border border-white/10 flex-shrink-0">
-        v2.0
-      </span>
+        <h2 class="font-bold text-xl">
+          CareFlow
+        </h2>
+
+        <p class="text-xs text-slate-400">
+          Hospital Management
+        </p>
+
+      </div>
 
     </div>
 
     <!-- MENU -->
-    <nav class="relative z-10 flex-1 p-5 space-y-1.5 text-sm font-medium overflow-y-auto">
 
-      <a routerLink="/dashboard"
-        routerLinkActive="!bg-white/10 !text-white !shadow-lg !shadow-indigo-500/20 !border-l-4 !border-indigo-400"
-        class="flex items-center gap-3.5 px-4 py-3 rounded-xl hover:bg-white/10 transition-all duration-300 cursor-pointer group text-white/60 hover:text-white border-l-4 border-transparent">
+    <nav class="flex-1 overflow-y-auto p-4">
 
-        <span class="text-xl group-hover:scale-110 transition-transform duration-300 flex-shrink-0">📊</span>
-        <span class="flex-1 font-medium tracking-wide">Dashboard</span>
+      <a *ngFor="let item of menuItems" [routerLink]="item.route" routerLinkActive="bg-indigo-600 text-white"
+        [routerLinkActiveOptions]="{exact:true}" class="flex items-center rounded-xl
+           text-slate-300
+           hover:bg-slate-800
+           hover:text-white
+           transition-all duration-300
+           mb-2" [class.justify-center]="sidebarCollapsed" [class.px-4]="!sidebarCollapsed" [class.py-3]="true">
 
-        <span
-          class="text-[11px] font-bold bg-gradient-to-r from-indigo-500 to-purple-600 px-2.5 py-1 rounded-full shadow-lg shadow-indigo-500/30 text-white border border-white/20 flex-shrink-0">
-          3
+        <span class="text-xl">
+
+          {{ item.icon }}
+
         </span>
 
-      </a>
+        <span *ngIf="!sidebarCollapsed" class="ml-4 flex-1">
 
-      <a routerLink="/users"
-        routerLinkActive="!bg-white/10 !text-white !shadow-lg !shadow-indigo-500/20 !border-l-4 !border-indigo-400"
-        class="flex items-center gap-3.5 px-4 py-3 rounded-xl hover:bg-white/10 transition-all duration-300 cursor-pointer group text-white/60 hover:text-white border-l-4 border-transparent">
+          {{ item.label }}
 
-        <span class="text-xl group-hover:scale-110 transition-transform duration-300 flex-shrink-0">👥</span>
-        <span class="flex-1 font-medium tracking-wide">Usuários</span>
+        </span>
 
-      </a>
+        <span *ngIf="item.badge && !sidebarCollapsed" class="bg-red-500 text-xs px-2 py-1 rounded-full">
 
-      <a routerLink="/doctors"
-        routerLinkActive="!bg-white/10 !text-white !shadow-lg !shadow-indigo-500/20 !border-l-4 !border-indigo-400"
-        class="flex items-center gap-3.5 px-4 py-3 rounded-xl hover:bg-white/10 transition-all duration-300 cursor-pointer group text-white/60 hover:text-white border-l-4 border-transparent">
+          {{ item.badge }}
 
-        <span class="text-xl group-hover:scale-110 transition-transform duration-300 flex-shrink-0">🩺</span>
-        <span class="flex-1 font-medium tracking-wide">Médicos</span>
-
-      </a>
-
-      <a routerLink="/patients"
-        routerLinkActive="!bg-white/10 !text-white !shadow-lg !shadow-indigo-500/20 !border-l-4 !border-indigo-400"
-        class="flex items-center gap-3.5 px-4 py-3 rounded-xl hover:bg-white/10 transition-all duration-300 cursor-pointer group text-white/60 hover:text-white border-l-4 border-transparent">
-
-        <span class="text-xl group-hover:scale-110 transition-transform duration-300 flex-shrink-0">🧍</span>
-        <span class="flex-1 font-medium tracking-wide">Pacientes</span>
-
-      </a>
-
-      <a routerLink="/appointments"
-        routerLinkActive="!bg-white/10 !text-white !shadow-lg !shadow-indigo-500/20 !border-l-4 !border-indigo-400"
-        class="flex items-center gap-3.5 px-4 py-3 rounded-xl hover:bg-white/10 transition-all duration-300 cursor-pointer group text-white/60 hover:text-white border-l-4 border-transparent">
-
-        <span class="text-xl group-hover:scale-110 transition-transform duration-300 flex-shrink-0">📅</span>
-        <span class="flex-1 font-medium tracking-wide">Consultas</span>
-
-      </a>
-
-      <a routerLink="/medical-records"
-        class="flex items-center gap-3.5 px-4 py-3 rounded-xl hover:bg-white/10 transition-all duration-300 cursor-pointer group text-white/60 hover:text-white border-l-4 border-transparent">
-
-        <span class="text-xl group-hover:scale-110 transition-transform duration-300 flex-shrink-0">📋</span>
-        <span class="flex-1 font-medium tracking-wide">Prontuários</span>
-
-      </a>
-
-      <!-- Separador -->
-      <div class="my-4 border-t border-white/10"></div>
-
-      <!-- Item extra -->
-      <a routerLink="/settings"
-        routerLinkActive="!bg-white/10 !text-white !shadow-lg !shadow-indigo-500/20 !border-l-4 !border-indigo-400"
-        class="flex items-center gap-3.5 px-4 py-3 rounded-xl hover:bg-white/10 transition-all duration-300 cursor-pointer group text-white/40 hover:text-white border-l-4 border-transparent opacity-70 hover:opacity-100">
-
-        <span class="text-xl group-hover:scale-110 transition-transform duration-300 flex-shrink-0">⚙️</span>
-        <span class="flex-1 font-medium tracking-wide">Configurações</span>
+        </span>
 
       </a>
 
     </nav>
 
-    <!-- FOOTER -->
-    <div class="relative z-10 p-5 border-t border-white/10 bg-black/30 backdrop-blur-sm flex-shrink-0">
+    <div class="border-t border-slate-800 p-5">
 
-      <div class="flex items-center gap-3 mb-3">
+      <div class="flex items-center gap-3 mb-4" [class.justify-center]="sidebarCollapsed">
 
-        <div
-          class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold shadow-lg shadow-indigo-500/30 relative flex-shrink-0 text-white text-sm">
-          JD
-          <span
-            class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-400 border-2 border-slate-900 rounded-full"></span>
+        <div class="w-12 h-12 rounded-xl
+             bg-gradient-to-r
+             from-indigo-500
+             to-purple-600
+             flex
+             items-center
+             justify-center
+             font-bold">
+
+          {{ getInitials() }}
+
         </div>
 
-        <div class="flex-1 min-w-0">
-          <p class="text-sm font-semibold truncate">Administrador</p>
-          <p class="text-xs text-white/60 flex items-center gap-1.5">
-            <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full inline-block animate-pulse"></span>
-            online
+        <div *ngIf="!sidebarCollapsed">
+
+          <p class="font-semibold">
+
+            {{ user?.name }}
+
           </p>
-        </div>
 
-        <button class="text-white/40 hover:text-white transition-colors flex-shrink-0 text-xl">
-          ⋮
-        </button>
+          <p class="text-xs text-slate-400">
+
+            {{ user?.role }}
+
+          </p>
+
+        </div>
 
       </div>
 
-      <button
-        class="w-full bg-red-500/90 hover:bg-red-600 text-white font-semibold py-2.5 rounded-xl text-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-red-500/30 flex items-center justify-center gap-2 backdrop-blur-sm border border-white/10">
-        <span class="text-lg">🚪</span>
-        Sair
+      <button (click)="logout()" class="w-full rounded-xl
+           bg-red-500
+           hover:bg-red-600
+           py-3
+           font-semibold
+           transition">
+
+        🚪
+
+        <span *ngIf="!sidebarCollapsed">
+
+          Sair
+
+        </span>
+
       </button>
 
     </div>
@@ -146,65 +126,218 @@
   </aside>
 
   <!-- CONTEÚDO -->
-  <div class="flex-1 flex flex-col min-w-0">
+  <div class="flex-1 flex flex-col overflow-hidden">
 
-    <!-- NAVBAR -->
-    <header
-      class="bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-200/50 px-8 py-4 flex justify-between items-center sticky top-0 z-40 flex-shrink-0">
+    <!-- HEADER -->
+    <header class="h-20
+         bg-white
+         dark:bg-slate-900
+         border-b
+         border-gray-200
+         dark:border-slate-700
+         shadow-sm
+         flex
+         items-center
+         justify-between
+         px-8
+         transition-colors
+         duration-300">
 
-      <div class="flex items-center gap-4 min-w-0">
-        <h1 class="text-xl font-bold text-gray-800 tracking-tight flex items-center gap-2 truncate">
-          <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent whitespace-nowrap">
-            Hospital Management
-          </span>
-          <span class="text-sm font-normal text-gray-400 font-mono hidden sm:inline">/ Sistema</span>
-        </h1>
+      <!-- ESQUERDA -->
+      <div class="flex items-center gap-5">
+
+        <!-- Botão Sidebar -->
+        <button (click)="toggleSidebar()"
+          class="w-11 h-11 rounded-xl hover:bg-gray-100 transition flex items-center justify-center">
+
+          ☰
+
+        </button>
+
+        <!-- Saudação -->
+
+        <div>
+
+          <h1 class="text-2xl font-bold text-gray-800">
+
+            {{ greeting }}, {{ firstName }}
+
+          </h1>
+
+          <p class="text-sm text-gray-500">
+
+            Bem-vindo ao CareFlow
+
+          </p>
+
+        </div>
+
       </div>
 
-      <div class="flex items-center gap-5 flex-shrink-0">
+      <!-- CENTRO -->
 
-        <!-- NOTIFICAÇÃO -->
-        <div class="relative cursor-pointer group">
-          <div class="p-2 rounded-xl hover:bg-gray-100 transition-colors duration-200 text-xl">
-            🔔
-          </div>
-          <span
-            class="absolute -top-0.5 -right-0.5 bg-gradient-to-r from-red-500 to-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg shadow-red-500/30 border border-white/20 min-w-[20px] text-center">
-            2
+      <div class="hidden xl:flex flex-1 justify-center px-12">
+
+        <div class="relative w-full max-w-xl">
+
+          <span class="absolute left-4 top-3.5 text-gray-400">
+
+            🔍
+
           </span>
+
+          <input type="text" [value]="search" (input)="onSearch($event)"
+            placeholder="Pesquisar pacientes, médicos, consultas..." class="w-full
+                 rounded-xl
+                 border
+                 border-gray-300
+                 bg-gray-50
+                 pl-12
+                 pr-4
+                 py-3
+                 outline-none
+                 transition
+                 focus:bg-white
+                 focus:ring-2
+                 focus:ring-indigo-500">
+
         </div>
 
-        <!-- Separador -->
-        <div class="w-px h-8 bg-gray-200 hidden sm:block"></div>
+      </div>
 
-        <!-- PERFIL -->
-        <div class="flex items-center gap-3">
-          <div class="text-right hidden sm:block">
-            <p class="text-xs font-medium text-gray-700">Admin</p>
-            <p class="text-[10px] text-gray-400">admin@careflow.com</p>
-          </div>
-          <div
-            class="w-9 h-9 rounded-xl bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-white text-sm font-bold shadow-md flex-shrink-0">
-            A
-          </div>
+      <!-- DIREITA -->
+
+      <div class="flex items-center gap-5">
+
+        <!-- Relógio -->
+
+        <div class="hidden lg:block text-right">
+
+          <p class="font-bold text-lg text-gray-700">
+
+            {{ currentDate | date:'HH:mm:ss' }}
+
+          </p>
+
+          <p class="text-xs text-gray-500">
+
+            {{ currentDate | date:'dd/MM/yyyy' }}
+
+          </p>
+
         </div>
 
-        <button
-          class="bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-[1.02] hover:shadow-xl shadow-gray-900/20 flex items-center gap-2 whitespace-nowrap">
-          <span class="text-base">🚪</span>
-          Logout
+        <!-- Tema -->
+
+        <button (click)="toggleTheme()" class="w-11 h-11 rounded-xl hover:bg-gray-100 transition">
+
+          {{ darkMode ? '☀️' : '🌙' }}
+
         </button>
+
+        <!-- Notificações -->
+
+        <button class="relative w-11 h-11 rounded-xl hover:bg-gray-100 transition">
+
+          🔔
+
+          <span *ngIf="notifications>0" class="absolute
+                 -top-1
+                 -right-1
+                 w-5
+                 h-5
+                 rounded-full
+                 bg-red-500
+                 text-white
+                 text-[10px]
+                 flex
+                 items-center
+                 justify-center">
+
+            {{ notifications }}
+
+          </span>
+
+        </button>
+
+        <!-- Perfil -->
+
+        <div class="flex items-center gap-3 border-l pl-5">
+
+          <div class="w-11
+                 h-11
+                 rounded-xl
+                 bg-gradient-to-r
+                 from-indigo-500
+                 to-purple-600
+                 text-white
+                 font-bold
+                 flex
+                 items-center
+                 justify-center">
+
+            {{ getInitials() }}
+
+          </div>
+
+          <div class="hidden md:block">
+
+            <p class="font-semibold">
+
+              {{ user?.name }}
+
+            </p>
+
+            <p class="text-xs text-gray-500">
+
+              {{ user?.role }}
+
+            </p>
+
+          </div>
+
+        </div>
 
       </div>
 
     </header>
 
     <!-- MAIN -->
-    <main class="flex-1 p-8 overflow-auto bg-gradient-to-br from-gray-50/50 to-gray-100/50">
-      <div class="max-w-7xl mx-auto">
+
+
+    <!-- MAIN -->
+    <main class="flex-1
+       overflow-auto
+       bg-slate-100
+       dark:bg-slate-950
+       transition-colors
+       duration-300">
+
+      <div class="max-w-7xl mx-auto p-8">
+
         <router-outlet></router-outlet>
+
       </div>
+
     </main>
+
+    <!-- FOOTER -->
+
+    <footer class="h-14 border-t border-gray-200 bg-white flex items-center justify-between px-8 text-sm text-gray-500">
+
+      <span>
+
+        © 2026 CareFlow Hospital Management System
+
+      </span>
+
+      <span>
+
+        Desenvolvido por Jean Joseph Bauzil
+
+      </span>
+
+    </footer>
 
   </div>
 

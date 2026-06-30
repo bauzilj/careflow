@@ -33,12 +33,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   loading = true;
 
   stats: DashboardStats = {
+
     users: 0,
     doctors: 0,
     patients: 0,
     appointments: 0,
     todayAppointments: 0,
+    specialties: 0,
+    insurance: 0,
     recentAppointments: []
+
   };
 
   private chartInstance: Chart | null = null;
@@ -54,8 +58,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     this.loadDashboard();
-
-    this.loadDoctors();
 
   }
 
@@ -73,11 +75,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
         this.stats = data;
 
+        this.loading = false;
+
+        setTimeout(() => {
+
+          this.renderChart();
+
+        });
+
       },
 
       error: (err) => {
 
         console.error(err);
+
+        this.loading = false;
 
       }
 

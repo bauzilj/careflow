@@ -21,7 +21,19 @@ import {
 })
 export class PatientsComponent implements OnInit {
 
-  constructor(private patientsService: PatientsService) {}
+  get totalInsurance(): number {
+
+    return new Set(
+
+      this.patients
+        .map(patient => patient.insurance)
+        .filter(insurance => insurance && insurance.trim() !== '')
+
+    ).size;
+
+  }
+
+  constructor(private patientsService: PatientsService) { }
 
   patients: Patient[] = [];
   filteredPatients: Patient[] = [];
@@ -130,7 +142,7 @@ export class PatientsComponent implements OnInit {
 
       cpf: patient.cpf,
 
-      birthDate: patient.birthDate.substring(0,10),
+      birthDate: patient.birthDate.substring(0, 10),
 
       gender: patient.gender,
 
@@ -187,13 +199,13 @@ export class PatientsComponent implements OnInit {
     const request = this.selectedPatient
 
       ? this.patientsService.updatePatient(
-          this.selectedPatient.id,
-          this.form
-        )
+        this.selectedPatient.id,
+        this.form
+      )
 
       : this.patientsService.createPatient(
-          this.form
-        );
+        this.form
+      );
 
     request.subscribe({
 

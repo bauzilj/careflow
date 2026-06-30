@@ -1,0 +1,78 @@
+<div class="min-h-screen bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 flex items-center justify-center">
+
+  <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl p-10">
+
+    <div class="text-center mb-8">
+
+      <div class="text-6xl mb-4">
+        🏥
+      </div>
+
+      <h1 class="text-3xl font-bold text-blue-700">
+        CareFlow
+      </h1>
+
+      <p class="text-gray-500 mt-2">
+        Sistema Hospitalar
+      </p>
+
+    </div>
+
+    <div
+      *ngIf="error"
+      class="bg-red-100 text-red-700 p-3 rounded-xl mb-4">
+
+      {{ error }}
+
+    </div>
+
+    <div class="space-y-5">
+
+      <div>
+
+        <label class="text-sm font-medium text-gray-700">
+          Email
+        </label>
+
+        <input
+          [(ngModel)]="form.email"
+          type="email"
+          class="w-full mt-2 border rounded-xl p-3 focus:ring-2 focus:ring-blue-500 outline-none"
+          placeholder="Digite seu email">
+
+      </div>
+
+      <div>
+
+        <label class="text-sm font-medium text-gray-700">
+          Senha
+        </label>
+
+        <input
+          [(ngModel)]="form.password"
+          type="password"
+          class="w-full mt-2 border rounded-xl p-3 focus:ring-2 focus:ring-blue-500 outline-none"
+          placeholder="Digite sua senha">
+
+      </div>
+
+      <button
+        (click)="login()"
+        [disabled]="loading"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl transition">
+
+        {{ loading ? 'Entrando...' : 'Entrar' }}
+
+      </button>
+
+    </div>
+
+    <div class="text-center mt-8 text-gray-400 text-sm">
+
+      © 2026 CareFlow
+
+    </div>
+
+  </div>
+
+</div>

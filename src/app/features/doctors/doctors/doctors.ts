@@ -4,6 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { StatsCardComponent } from '../../../shared/components/stats-card/stats-card';
 
 import { DoctorsService, Doctor } from '../../../core/services/doctors.service';
+import {
+  AppointmentsService,
+  Appointment
+} from '../../../core/services/appointments.service';
+
+import {
+  PatientsService,
+  Patient
+} from '../../../core/services/patients.service';
 
 @Component({
   selector: 'app-doctors',
@@ -15,7 +24,11 @@ import { DoctorsService, Doctor } from '../../../core/services/doctors.service';
 export class DoctorsComponent implements OnInit {
 
 
-  constructor(private doctorsService: DoctorsService) { }
+  constructor(
+    private doctorsService: DoctorsService,
+    private appointmentsService: AppointmentsService,
+    private patientsService: PatientsService
+  ) { }
 
 
 
@@ -23,7 +36,24 @@ export class DoctorsComponent implements OnInit {
     return new Set(this.doctors.map(d => d.specialty)).size;
   }
 
+  get totalInsurance(): number {
+
+    return new Set(
+
+      this.patients
+        .map(patient => patient.insurance)
+        .filter(insurance => insurance && insurance.trim() !== '')
+
+    ).size;
+
+  }
+
   doctors: Doctor[] = [];
+
+  appointments: Appointment[] = [];
+
+  patients: Patient[] = [];
+
   filteredDoctors: Doctor[] = [];
 
   search = '';
@@ -43,7 +73,45 @@ export class DoctorsComponent implements OnInit {
   };
 
   ngOnInit(): void {
+
     this.loadDoctors();
+
+    this.loadAppointments();
+
+    this.loadPatients();
+
+  }
+
+  loadAppointments() {
+
+    this.appointmentsService.getAppointments().subscribe({
+
+      next: (data) => {
+        this.appointments = data;
+      },
+
+      error: (err) => console.error(err)
+
+    });
+
+  }
+
+
+
+  loadPatients() {
+
+    this.patientsService.getPatients().subscribe({
+
+      next: (data) => {
+
+        this.patients = data;
+
+      },
+
+      error: (err) => console.error(err)
+
+    });
+
   }
 
   loadDoctors() {
@@ -58,6 +126,8 @@ export class DoctorsComponent implements OnInit {
       }
     });
   }
+
+
 
   filterDoctors() {
     const value = this.search.toLowerCase();
